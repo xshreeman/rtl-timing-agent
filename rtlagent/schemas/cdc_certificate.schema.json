@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cdc_certificate.schema.json",
+  "title": "CDC Safety Certificate",
+  "description": "The flagship artefact. Differential: states whether every CDC property that held in golden still holds in revised.",
+  "type": "object",
+  "required": ["version", "golden_hash", "revised_hash", "tool_versions", "generated_at",
+               "properties", "scope_not_checked", "verdict"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "golden_hash": {"type": "string"},
+    "revised_hash": {"type": "string"},
+    "tool_versions": {
+      "type": "object",
+      "description": "MANDATORY. A certificate that does not name its tools is not evidence.",
+      "additionalProperties": {"type": "string"}
+    },
+    "generated_at": {"type": "string", "format": "date-time"},
+    "properties": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "verdict"],
+        "properties": {
+          "name": {
+            "enum": ["crossing_set_unchanged",
+                     "synchroniser_topology_unchanged",
+                     "gray_encoding_preserved",
+                     "reconvergence_unchanged",
+                     "fifo_protocol_unchanged",
+                     "reset_crossings_unchanged",
+                     "attributes_survive_synthesis"]
+          },
+          "verdict": {
+            "enum": ["pass", "fail", "unproven", "not_applicable"],
+            "description": "unproven is a first-class result. Never report unproven as pass."
+          },
+          "reason": {"type": "string", "description": "on fail: specific and actionable, with file:line"},
+          "evidence_ref": {"type": "string", "description": "path to the artefact backing this verdict"},
+          "affected": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "scope_not_checked": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "MANDATORY. Explicit list of what this certificate does NOT cover. Bounded scope is a trust property."
+    },
+    "verdict": {"enum": ["safe_to_merge", "blocked", "needs_review"]},
+    "signature": {"type": "string", "description": "hmac over the canonical JSON of everything above"}
+  }
+}

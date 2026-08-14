@@ -1,0 +1,72 @@
+{
+  "version": "1.0",
+  "golden_hash": "4a91c7de",
+  "revised_hash": "9f2b31aa",
+  "tool_versions": {
+    "yosys": "0.44",
+    "opensta": "2.6.0",
+    "cdcguard": "0.1.0"
+  },
+  "generated_at": "2026-08-14T22:58:34.050415+00:00",
+  "properties": [
+    {
+      "name": "crossing_set_unchanged",
+      "verdict": "pass",
+      "reason": "",
+      "evidence_ref": "",
+      "affected": []
+    },
+    {
+      "name": "synchroniser_topology_unchanged",
+      "verdict": "pass",
+      "reason": "",
+      "evidence_ref": "",
+      "affected": []
+    },
+    {
+      "name": "gray_encoding_preserved",
+      "verdict": "fail",
+      "reason": "rd_ptr_gray in rtl/lane_rx.v:214 is no longer driven directly by flop outputs. Driver is combinational. Single-bit-transition guarantee is lost; the receiving domain can sample a glitch. NOTE: this change may be functionally equivalent \u2014 equivalence does not imply CDC safety.",
+      "evidence_ref": "",
+      "affected": [
+        "c1"
+      ]
+    },
+    {
+      "name": "reconvergence_unchanged",
+      "verdict": "pass",
+      "reason": "",
+      "evidence_ref": "",
+      "affected": []
+    },
+    {
+      "name": "fifo_protocol_unchanged",
+      "verdict": "not_applicable",
+      "reason": "",
+      "evidence_ref": "",
+      "affected": []
+    },
+    {
+      "name": "reset_crossings_unchanged",
+      "verdict": "pass",
+      "reason": "",
+      "evidence_ref": "",
+      "affected": []
+    },
+    {
+      "name": "attributes_survive_synthesis",
+      "verdict": "unproven",
+      "reason": "post-synthesis netlist not supplied",
+      "evidence_ref": "",
+      "affected": []
+    }
+  ],
+  "scope_not_checked": [
+    "power intent (UPF)",
+    "DFT / scan chain integrity",
+    "multicycle path assertions",
+    "X-propagation semantics",
+    "analog / mixed-signal boundaries"
+  ],
+  "verdict": "blocked"
+}

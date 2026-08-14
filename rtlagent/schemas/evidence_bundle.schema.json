@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evidence_bundle.schema.json",
+  "title": "Evidence Bundle",
+  "description": "THE PRODUCT SURFACE. Turns a 40-minute review into a 2-minute one. Produced by M09.",
+  "type": "object",
+  "required": [
+    "version",
+    "candidate_id",
+    "summary",
+    "diff",
+    "rationale",
+    "legality",
+    "gates",
+    "timing_delta",
+    "scope_not_checked",
+    "verdict"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "candidate_id": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "description": "ONE line: what it does and what it costs"
+    },
+    "diff": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "legality": {
+      "type": "object",
+      "required": [
+        "rule",
+        "detail",
+        "move_id"
+      ],
+      "properties": {
+        "rule": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "move_id": {
+          "type": "string"
+        },
+        "iteration_bound_ns": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": [
+        "lint",
+        "synthesis",
+        "cdc",
+        "equivalence"
+      ],
+      "properties": {
+        "lint": {
+          "$ref": "#/$defs/gate"
+        },
+        "synthesis": {
+          "$ref": "#/$defs/gate"
+        },
+        "cdc": {
+          "$ref": "#/$defs/gate"
+        },
+        "equivalence": {
+          "$ref": "#/$defs/gate"
+        }
+      }
+    },
+    "timing_delta": {
+      "type": "object",
+      "properties": {
+        "wns_before_ns": {
+          "type": "number"
+        },
+        "wns_after_ns": {
+          "type": "number"
+        },
+        "tns_before_ns": {
+          "type": "number"
+        },
+        "tns_after_ns": {
+          "type": "number"
+        },
+        "fmax_before_mhz": {
+          "type": "number"
+        },
+        "fmax_after_mhz": {
+          "type": "number"
+        },
+        "hold_wns_after_ns": {
+          "type": "number"
+        },
+        "area_delta_um2": {
+          "type": "number"
+        },
+        "power_delta_mw": {
+          "type": "number"
+        },
+        "new_violating_endpoints": {
+          "type": "integer"
+        }
+      }
+    },
+    "latency_delta": {
+      "type": "integer"
+    },
+    "scope_not_checked": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "MANDATORY. Bounded scope is a trust property."
+    },
+    "verdict": {
+      "enum": [
+        "accept",
+        "reject",
+        "needs_review"
+      ]
+    },
+    "reviewer_decision": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "populated by M11; raw data for the review-time study",
+      "properties": {
+        "decision": {
+          "enum": [
+            "accept",
+            "reject"
+          ]
+        },
+        "seconds_taken": {
+          "type": "number"
+        },
+        "reviewer_id": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "required": [
+        "verdict"
+      ],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "pass",
+            "fail",
+            "unproven",
+            "skipped"
+          ]
+        },
+        "tool": {
+          "type": "string"
+        },
+        "tool_version": {
+          "type": "string"
+        },
+        "seconds": {
+          "type": "number"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "artefact": {
+          "type": "string"
+        },
+        "counterexample": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "failing input sequence, fed back to M08"
+        },
+        "partition_coverage": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "on timeout, fraction proven"
+        }
+      }
+    }
+  }
+}

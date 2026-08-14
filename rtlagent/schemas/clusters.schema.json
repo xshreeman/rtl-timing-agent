@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clusters.schema.json",
+  "title": "Violation Clusters",
+  "description": "Root causes, not symptoms. Produced by M05.",
+  "type": "object",
+  "required": [
+    "version",
+    "clusters"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cluster_id",
+          "diagnosis",
+          "tns_contribution_ns",
+          "endpoints",
+          "shared_cells",
+          "legal_fix_families"
+        ],
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          },
+          "diagnosis": {
+            "enum": [
+              "deep_combinational",
+              "high_fanout",
+              "inside_feedback_loop",
+              "unbalanced_pipeline",
+              "priority_cascade",
+              "fsm_decode",
+              "wide_arithmetic",
+              "constraint_gap",
+              "protected_cdc"
+            ]
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "tns_contribution_ns": {
+            "type": "number",
+            "description": "rank by THIS, not worst slack"
+          },
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "shared_cells": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rtl_region": {
+            "type": "object",
+            "properties": {
+              "module": {
+                "type": "string"
+              },
+              "src_file": {
+                "type": "string"
+              },
+              "line_start": {
+                "type": "integer"
+              },
+              "line_end": {
+                "type": "integer"
+              }
+            }
+          },
+          "cell_delay_fraction": {
+            "type": "number"
+          },
+          "legal_fix_families": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "run_record.schema.json",
+  "title": "Run Record",
+  "description": "Full provenance for one run. Produced by M10.",
+  "type": "object",
+  "required": [
+    "version",
+    "run_id",
+    "started_at",
+    "seed",
+    "tool_versions",
+    "iterations",
+    "termination"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "seed": {
+      "type": "integer",
+      "description": "pinned, or you will attribute placement noise to your optimiser"
+    },
+    "tool_versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "baseline": {
+      "type": "object"
+    },
+    "iterations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          },
+          "cluster_id": {
+            "type": "string"
+          },
+          "candidates_l0": {
+            "type": "integer"
+          },
+          "candidates_l1": {
+            "type": "integer"
+          },
+          "candidates_l2": {
+            "type": "integer"
+          },
+          "accepted": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "type": "string"
+          },
+          "wall_clock_s": {
+            "type": "number"
+          },
+          "tool_invocations": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "pareto_front": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "candidate_id": {
+            "type": "string"
+          },
+          "fmax_mhz": {
+            "type": "number"
+          },
+          "area_um2": {
+            "type": "number"
+          },
+          "latency": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "termination": {
+      "type": "object",
+      "required": [
+        "reason"
+      ],
+      "properties": {
+        "reason": {
+          "enum": [
+            "target_met",
+            "no_legal_move_improves",
+            "iteration_bound_reached",
+            "budget_exhausted",
+            "error"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

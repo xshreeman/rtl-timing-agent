@@ -1,0 +1,6 @@
+networkx>=3.2
+jsonschema>=4.20
+pytest>=8.0
+cocotb>=1.9
+matplotlib>=3.8
+anthropic>=0.40

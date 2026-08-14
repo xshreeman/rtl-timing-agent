@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "timing.schema.json",
+  "title": "Timing Report",
+  "description": "Machine-readable STA result. Produced by M02.",
+  "type": "object",
+  "required": [
+    "version",
+    "design_hash",
+    "tool_versions",
+    "corners"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "design_hash": {
+      "type": "string"
+    },
+    "tool_versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "fmax_mhz": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "binary search on clock period, NOT slack at one target"
+    },
+    "area_um2": {
+      "type": "number"
+    },
+    "power_mw": {
+      "type": "number"
+    },
+    "corners": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "check",
+          "wns_ns",
+          "tns_ns",
+          "violating_endpoints"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "check": {
+            "enum": [
+              "setup",
+              "hold"
+            ],
+            "description": "setup at slow corner, hold at fast corner"
+          },
+          "wns_ns": {
+            "type": "number"
+          },
+          "tns_ns": {
+            "type": "number"
+          },
+          "violating_endpoints": {
+            "type": "integer"
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/path"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "path": {
+      "type": "object",
+      "required": [
+        "endpoint",
+        "slack_ns",
+        "startpoint"
+      ],
+      "properties": {
+        "startpoint": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "slack_ns": {
+          "type": "number"
+        },
+        "launch_clock": {
+          "type": "string"
+        },
+        "capture_clock": {
+          "type": "string"
+        },
+        "logic_depth": {
+          "type": "integer"
+        },
+        "cell_delay_ns": {
+          "type": "number"
+        },
+        "net_delay_ns": {
+          "type": "number",
+          "description": "if net delay dominates, pipelining will NOT help; replicate the driver"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "delay_ns": {
+                "type": "number"
+              },
+              "fanout": {
+                "type": "integer"
+              },
+              "src_file": {
+                "type": "string"
+              },
+              "src_line": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

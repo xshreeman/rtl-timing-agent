@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "graph.schema.json",
+  "title": "Design Knowledge Graph",
+  "description": "The shared representation substrate. Links source lines, gates, clock domains, hierarchy. Produced by M03.",
+  "type": "object",
+  "required": [
+    "version",
+    "design_hash",
+    "view",
+    "nodes",
+    "edges",
+    "clocks"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "design_hash": {
+      "type": "string"
+    },
+    "view": {
+      "enum": [
+        "pre_map",
+        "post_map"
+      ],
+      "description": "pre_map readable/traceable; post_map accurate delays. Keep both."
+    },
+    "correspondence": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "clocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "kind"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "master",
+              "generated"
+            ]
+          },
+          "period_ns": {
+            "type": "number"
+          },
+          "divide_by": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "async_group": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "reg",
+              "comb",
+              "operator",
+              "port",
+              "memory",
+              "const"
+            ]
+          },
+          "ref": {
+            "type": "string"
+          },
+          "clock_domain": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hier_path": {
+            "type": "string"
+          },
+          "src_file": {
+            "type": "string"
+          },
+          "src_line": {
+            "type": "integer"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "protected": {
+            "type": "boolean"
+          },
+          "attrs": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "net": {
+            "type": "string"
+          },
+          "bit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

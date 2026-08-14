@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "directive.schema.json",
+  "title": "Transformation Directive",
+  "description": "The model's output: a CHOICE, not code. M08 produces, M07 applies.",
+  "type": "object",
+  "required": [
+    "version",
+    "cluster_id",
+    "mode",
+    "rationale"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "cluster_id": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "selection",
+        "generation"
+      ],
+      "description": "selection = pick move_id (zero syntax risk); generation = write RTL (full verification cost)"
+    },
+    "move_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "generated_rtl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "params": {
+      "type": "object"
+    },
+    "declared_latency_delta": {
+      "type": "integer"
+    },
+    "predicted_gain_ns": {
+      "type": "number"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "goes verbatim into the bundle a human reads"
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "attempt": {
+          "type": "integer"
+        },
+        "prior_failures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

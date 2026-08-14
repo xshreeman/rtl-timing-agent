@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "legal_moves.schema.json",
+  "title": "Legal Moves",
+  "description": "The finite menu handed to the model. Produced by M06. The model may only choose from this.",
+  "type": "object",
+  "required": ["version", "cluster_id", "moves", "protected_regions", "iteration_bound_ns"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "cluster_id": {"type": "string"},
+    "target_period_ns": {"type": "number"},
+    "iteration_bound_ns": {
+      "type": ["number", "null"],
+      "description": "max over loops of (loop delay / loop registers). If target_period_ns < this, NO legal move can succeed and the correct output is a report, not a patch."
+    },
+    "achievable": {"type": "boolean"},
+    "unachievable_reason": {"type": ["string", "null"]},
+    "protected_regions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "cell ids from cdc_manifest.protected_cells intersecting this cluster"
+    },
+    "moves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["move_id", "kind", "target", "latency_delta", "predicted_gain_ns", "legality_proof"],
+        "properties": {
+          "move_id": {"type": "string"},
+          "kind": {"enum": ["pipeline_cut", "retime", "replicate_driver",
+                            "restructure_tree", "fsm_reencode", "arith_substitute", "c_slow"]},
+          "target": {
+            "type": "object",
+            "properties": {
+              "module": {"type": "string"},
+              "cut_edges": {"type": "array", "items": {"type": "string"}},
+              "src_file": {"type": "string"},
+              "src_line": {"type": "integer"}
+            }
+          },
+          "latency_delta": {"type": "integer"},
+          "predicted_gain_ns": {"type": "number"},
+          "predicted_area_delta_um2": {"type": "number"},
+          "balance_score": {"type": "number", "description": "0..1, 1 = splits path delay perfectly evenly"},
+          "legality_proof": {
+            "type": "object",
+            "required": ["rule", "detail"],
+            "properties": {
+              "rule": {"enum": ["feed_forward_cutset", "loop_register_count_preserved",
+                                "no_side_effects", "combinational_only", "reachable_states_preserved"]},
+              "detail": {"type": "string", "description": "human-readable justification that goes into the evidence bundle"}
+            }
+          },
+          "verification_boundary": {
+            "type": "object",
+            "properties": {
+              "module": {"type": "string"},
+              "interface_kind": {"enum": ["latency_insensitive", "fixed_latency"]},
+              "note": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

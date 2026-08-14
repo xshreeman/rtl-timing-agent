@@ -1,0 +1,64 @@
+{
+  "design_hash": "4a91c7de",
+  "tool_versions": {
+    "yosys": "0.44",
+    "opensta": "2.6.0",
+    "cdcguard": "0.1.0"
+  },
+  "domains": [
+    {
+      "name": "CLK_LANE0",
+      "root_clock": "CLK_LANE0",
+      "kind": "master",
+      "async_group": 0
+    },
+    {
+      "name": "CLK_CORE",
+      "root_clock": "CLK_CORE",
+      "kind": "master",
+      "async_group": 1
+    }
+  ],
+  "crossings": [
+    {
+      "id": "c1",
+      "signal": "rd_ptr_gray",
+      "src_domain": "CLK_LANE0",
+      "dst_domain": "CLK_CORE",
+      "kind": "gray_bus",
+      "width": 4,
+      "sync_depth": null,
+      "encoding": "gray",
+      "driven_directly_by_flops": true,
+      "cells": [],
+      "src_file": "rtl/lane_rx.v",
+      "src_line": 200,
+      "structural_hash": "h1",
+      "verdict": "unreviewed",
+      "reason": ""
+    },
+    {
+      "id": "c2",
+      "signal": "mgmt_req_sync",
+      "src_domain": "CLK_LANE0",
+      "dst_domain": "CLK_CORE",
+      "kind": "two_flop_sync",
+      "width": 1,
+      "sync_depth": 2,
+      "encoding": "unknown",
+      "driven_directly_by_flops": true,
+      "cells": [],
+      "src_file": "rtl/sync.v",
+      "src_line": 40,
+      "structural_hash": "s2",
+      "verdict": "unreviewed",
+      "reason": ""
+    }
+  ],
+  "protected_cells": [
+    "u_sync/ff0",
+    "u_sync/ff1"
+  ],
+  "reconvergence": [],
+  "version": "1.0"
+}

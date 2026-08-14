@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cdc_manifest.schema.json",
+  "title": "CDC Manifest",
+  "description": "Every clock-domain crossing found in one design version. Produced by M04 extract mode.",
+  "type": "object",
+  "required": ["version", "design_hash", "tool_versions", "domains", "crossings", "protected_cells"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "design_hash": {"type": "string", "description": "sha256 over sorted RTL file contents"},
+    "tool_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "root_clock", "kind"],
+        "properties": {
+          "name": {"type": "string"},
+          "root_clock": {"type": "string"},
+          "kind": {"enum": ["master", "generated"]},
+          "divide_by": {"type": ["integer", "null"]},
+          "source_domain": {"type": ["string", "null"]},
+          "async_group": {"type": "integer", "description": "domains sharing a group are synchronous to each other"}
+        }
+      }
+    },
+    "crossings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/crossing"}
+    },
+    "protected_cells": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "cell ids the optimiser must never modify; also emitted as keep attributes"
+    },
+    "reconvergence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["signals", "merge_node"],
+        "properties": {
+          "signals": {"type": "array", "items": {"type": "string"}},
+          "merge_node": {"type": "string"},
+          "src_file": {"type": "string"},
+          "src_line": {"type": "integer"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "crossing": {
+      "type": "object",
+      "required": ["id", "signal", "src_domain", "dst_domain", "kind", "verdict", "structural_hash"],
+      "properties": {
+        "id": {"type": "string", "description": "stable id: sha1(signal + src + dst)[:12]"},
+        "signal": {"type": "string"},
+        "width": {"type": "integer"},
+        "src_domain": {"type": "string"},
+        "dst_domain": {"type": "string"},
+        "kind": {
+          "enum": ["two_flop_sync", "three_flop_sync", "gray_bus", "async_fifo",
+                   "handshake", "reset_crossing", "unsynchronised", "unknown"]
+        },
+        "sync_depth": {"type": ["integer", "null"]},
+        "encoding": {"enum": ["gray", "binary", "onehot", "none", "unknown"]},
+        "driven_directly_by_flops": {"type": "boolean",
+          "description": "TRUE if the crossing bus comes straight out of registers with no combinational logic. This single boolean catches the gray-code rewrite failure."},
+        "cells": {"type": "array", "items": {"type": "string"}},
+        "src_file": {"type": "string"},
+        "src_line": {"type": "integer"},
+        "structural_hash": {"type": "string",
+          "description": "hash over the crossing's topology only, ignoring net names. Two crossings with the same structural_hash are structurally identical."},
+        "verdict": {"enum": ["safe", "unsafe", "unreviewed"]},
+        "reason": {"type": "string"}
+      }
+    }
+  }
+}
